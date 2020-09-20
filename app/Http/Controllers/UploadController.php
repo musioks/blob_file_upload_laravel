@@ -28,16 +28,26 @@ class UploadController extends Controller
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
                 $imageType = $file->getClientOriginalExtension();
-                $image_resize = Image::make($file)->resize( 300, null, function ( $constraint ) {
-                    $constraint->aspectRatio();
-                })->encode( $imageType );
+                if ($request->file_type == 'passport') {
+                    $image_resize = Image::make($file)->resize(null, 150, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->encode($imageType);
+
+                } elseif ($request->file_type == 'nid') {
+                    $image_resize = Image::make($file)->resize(null, 200, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->encode($imageType);
+                } else {
+                    $image_resize = Image::make($file)->resize(300, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->encode($imageType);
+                }
                 $upload->attachment = $image_resize;
                 $upload->image_type = $imageType;
             }
             $upload->save();
             return redirect()->back()->with('status', 'File uploaded successfully!');
-        }
-        catch (QueryException $ex) {
+        } catch (QueryException $ex) {
             return redirect()->back()->with('status', $ex->errorInfo[2]);
         } catch (Exception $ex) {
             return redirect()->back()->with('status', $ex->getMessage());
