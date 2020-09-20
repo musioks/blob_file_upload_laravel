@@ -26,7 +26,7 @@
             <h3>Files List</h3>
             @isset($uploads)
                 @foreach($uploads as $upload)
-                    <div class="card shadow-lg">
+                    <div class="card p-2 shadow-lg">
                         <div class="card-body">
                             <h5 class="card-title">{{strtoupper($upload->file_type) ?? ''}}</h5>
                         </div>
